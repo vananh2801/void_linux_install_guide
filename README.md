@@ -222,7 +222,15 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     sudo xbps-install noto-fonts-emoji noto-fonts-ttf noto-fonts-ttf-extra
     ```
 
-2. Cài một số phông từ Microsoft (ví dụ Arial, Times New Roman,... ):
+2. Cài Ubuntu fonts:
+
+    ```bash
+    sudo xbps-install ttf-ubuntu-font-family
+    ```
+
+    Dùng Gnome Tweaks chỉnh sang loại này cho dễ nhìn.
+
+3. Cài một số phông từ Microsoft (ví dụ Arial, Times New Roman,... ):
 
     Trước hết, ta cài xbps-src:
 
@@ -405,4 +413,3 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     export GLFW_IM_MODULE=ibus
     EOF
     ```
-    
