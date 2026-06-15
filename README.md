@@ -138,15 +138,27 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     sudo sv start iwd
     ```
 
-## Cài gói pipewire để có âm thanh và streaming trên Gnome
+## Cài gói PipeWire để có âm thanh và quay màn hình trên Gnome
 
 1. Cài đặt các gói:
 
     ```bash
     sudo xbps-install -S pipewire wireplumber alsa-pipewire pipewire-pulse libspa-bluetooth pulseaudio-utils pulsemixer
     ```
+2. Cấu hình WirePlumber:
 
-2. Cấu hình ALSA:
+    ```bash
+    sudo mkdir -p /etc/pipewire/pipewire.conf.d
+    sudo ln -s /usr/share/examples/wireplumber/10-wireplumber.conf /etc/pipewire/pipewire.conf.d/
+    ```
+
+3. Cấu hình pipewire-pulse:
+
+    ```bash
+    sudo mkdir -p /etc/pipewire/pipewire.conf.d
+    sudo ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/
+    ```
+4. Cấu hình ALSA:
 
     ```bash
     sudo mkdir -p /etc/alsa/conf.d
@@ -154,19 +166,19 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     sudo ln -sf /usr/share/alsa/alsa.conf.d/99-pipewire-default.conf /etc/alsa/conf.d/
     ```
 
-3. Cài đặt tự khởi động pipewire:
-    
+5. Bật tự khởi chạy cho PipeWire:
+
+    ```bash
+    sudo mkdir -p /etc/alsa/conf.d
+    sudo ln -sf /usr/share/alsa/alsa.conf.d/50-pipewire.conf /etc/alsa/conf.d/
+    sudo ln -sf /usr/share/alsa/alsa.conf.d/99-pipewire-default.conf /etc/alsa/conf.d/
+    ```
+
+6. Cấp quyền cho người dùng:
+
     ```bash
     mkdir -p ~/.config/autostart
     ln -sf /usr/share/applications/pipewire.desktop ~/.config/autostart/
-    ln -sf /usr/share/applications/pipewire-pulse.desktop ~/.config/autostart/
-    ln -sf /usr/share/applications/wireplumber.desktop ~/.config/autostart/
-    ```
-
-4. Cấp quyền cho người dùng:
-
-    ```bash
-    sudo usermod -aG audio,video $USER
     ```
 
 ## Cài đặt Bluetooth
@@ -283,3 +295,110 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 ## Cài đặt Fcitx5-Lotus:
 
+1. Cài đặt fcitx5:
+
+    ```bash
+    sudo xbps-install fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
+    ```
+
+2. Bật tự khởi chạy cho fcitx5
+
+    ```bash
+    mkdir -p ~/.config/autostart
+    ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
+    ```
+
+3. Cài đặt fcitx5-lotus
+
+- Cài đặt các gói:
+
+    ```bash
+    sudo xbps-install acl cmake extra-cmake-modules libfcitx5-devel libinput-devel eudev-libudev-devel gcc go gettext-devel pkg-config hicolor-icon-theme libX11-devel
+    ```
+
+- Clone source và build:
+
+    ```bash
+    git clone --recursive https://github.com/LotusInputMethod/fcitx5-lotus.git
+    cd fcitx5-lotus
+    mkdir build && cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=/usr/lib -DINSTALL_RUNIT=ON -DRUNIT_SV_DIR=/etc/sv ..
+    make
+    sudo make install
+    ```
+
+- Tạo User và Group (thay thế systemd-sysusers):
+
+    ```bash
+    sudo groupadd -f input
+    sudo useradd -M -g input -s /usr/bin/nologin -d / uinput_proxy
+    ```
+
+- Reload Udev Rules:
+
+    ```bash
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+    ```
+
+- Bật tự khởi chạy cho fcitx-lotus-server
+
+    ```bash
+    nano ~/.config/autostart/fcitx5-lotus-server.desktop
+    ```
+    Thêm vào nội dung:
+    
+    ```bash
+    [Desktop Entry]
+    Name=Fcitx5 Lotus Server
+    GenericName=Input Method Server
+    Comment=Backend server for fcitx5-lotus
+    Exec=/usr/bin/fcitx5-lotus-server
+    Terminal=false
+    Type=Application
+    Categories=System;Utility;
+    StartupNotify=false
+    X-GNOME-Autostart-enabled=true
+    ```
+
+    Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
+
+- Nạp Kernel Module uinput:
+
+    ```bash
+    sudo modprobe uinput
+    ```
+
+- Đối với bash shell (mặc định), chạy:
+
+    ```bash
+    cat <<EOF >> ~/.bash_profile
+    export XMODIFIERS=@im=fcitx
+    export QT_IM_MODULE=fcitx
+    export QT_IM_MODULES="wayland;fcitx"
+    export GLFW_IM_MODULE=ibus
+    EOF
+    ```
+
+- Đối với fish shell, chạy:
+
+    ```
+    echo 'if status is-login
+        set -Ux XMODIFIERS @im=fcitx
+        set -Ux QT_IM_MODULE fcitx
+        set -Ux QT_IM_MODULES "wayland;fcitx"
+        set -Ux GLFW_IM_MODULE ibus
+     ~/.config/fish/config.fish
+    ```
+
+- Đối với zsh shell, chạy:
+
+    ```
+    cat <<EOF >> ~/.zprofile
+    export XMODIFIERS=@im=fcitx
+    export QT_IM_MODULE=fcitx
+    export QT_IM_MODULES="wayland;fcitx"
+    export GLFW_IM_MODULE=ibus
+    EOF
+    ```
+    
