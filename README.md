@@ -1,4 +1,8 @@
-# Void_linux_install_guide
+# Hướng dẫn cài đặt Gnome trên Void Linux (06/2026)
+
+Hướng dẫn này dùng để  cài Gnome và một số gói khác sau khi cài Void Linux bằng base ISO.
+
+Khi cài nên nên chọn srouce cài từ Internet để có các gói mới nhất dùng cho ổn định, đỡ mất thời gian update lại sau.
 
 Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/installation/live-images/guide.html) của Void Linux.
 
@@ -181,7 +185,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     ln -sf /usr/share/applications/pipewire.desktop ~/.config/autostart/
     ```
 
-## Cài đặt Bluetooth
+## Cài đặt Bluetooth cho Gnome
 
 1. Cài đặt bluez (thường thì đã có sẵn khi cài Gnome):
 
@@ -313,7 +317,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 - Cài đặt các gói:
 
     ```bash
-    sudo xbps-install acl cmake extra-cmake-modules libfcitx5-devel libinput-devel eudev-libudev-devel gcc go gettext-devel pkg-config hicolor-icon-theme libX11-devel
+    sudo xbps-install acl acl-progs cmake extra-cmake-modules libfcitx5-devel libinput-devel eudev-libudev-devel gcc go gettext-devel pkg-config hicolor-icon-theme libX11-devel
     ```
 
 - Clone source và build:
