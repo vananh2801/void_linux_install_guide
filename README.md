@@ -20,15 +20,24 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     ip link
     ```
 
-    Lúc này máy sẽ hiện danh sách các interface và trạng thái. Như máy tôi là tên interface là **“wlp2s0”**.
+    Lúc này máy sẽ hiện danh sách các interface và trạng thái. Như máy tôi là tên interface là **wlp2s0**.
 
 3. Cấu hình Wi-fi:
 
     ```bash
-    wpa_passphrase SSID PASSWORD >> /etc/wpa_supplicant/wpa_supplicant-wlp2s0.conf
+    wpa_passphrase "SSID" "PASSWORD" >> /etc/wpa_supplicant/wpa_supplicant-wlp2s0.conf
     ```
 
-    Trong đó, **"SSID"** là tên Wi-fi, **"PASSWORD"** là mật khẩu, **wlp2s0** nên thay thế cho thích hợp.
+    Trong đó:
+    - **SSID** là tên Wi-fi (không có dấu tiếng Việt hoặc kí tự lạ, nếu có thì lên mạng chuyển string thành hex để nhập)
+    - **PASSWORD** là mật khẩu 
+    - **wlp2s0** nên thay thế cho thích hợp.
+
+    Chẳng hạn:
+
+    ```bash
+    wpa_passphrase "Anh Đẹp Trai" "PASSWORD" >> /etc/wpa_supplicant/wpa_supplicant-wlp2s0.conf
+    ```
 
 4. Khởi chạy dịch vụ wpa_supplicant và dhcpcd:
 
