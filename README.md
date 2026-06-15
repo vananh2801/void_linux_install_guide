@@ -184,16 +184,14 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 5. Bật tự khởi chạy cho PipeWire:
 
     ```bash
-    sudo mkdir -p /etc/alsa/conf.d
-    sudo ln -sf /usr/share/alsa/alsa.conf.d/50-pipewire.conf /etc/alsa/conf.d/
-    sudo ln -sf /usr/share/alsa/alsa.conf.d/99-pipewire-default.conf /etc/alsa/conf.d/
+    mkdir -p ~/.config/autostart
+    ln -sf /usr/share/applications/pipewire.desktop ~/.config/autostart/
     ```
 
 6. Cấp quyền cho người dùng:
 
     ```bash
-    mkdir -p ~/.config/autostart
-    ln -sf /usr/share/applications/pipewire.desktop ~/.config/autostart/
+    sudo usermod -a -G audio <username>
     ```
 
 ## Cài đặt Bluetooth cho Gnome
