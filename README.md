@@ -28,13 +28,15 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     wpa_passphrase SSID PASSWORD >> /etc/wpa_supplicant/wpa_supplicant-wlp2s0.conf
     ```
 
-    Trong đó, **"SSID"** là tên Wi-fi, **"PASSWORD"** là mật khẩu.
+    Trong đó, **"SSID"** là tên Wi-fi, **"PASSWORD"** là mật khẩu, **wlp2s0** nên thay thế cho thích hợp.
 
-4. Khởi chạy dịch vụ wpa_supplicant:
+4. Khởi chạy dịch vụ wpa_supplicant và dhcpcd:
 
     ```bash
     sudo ln -s /etc/sv/wpa_supplicant /var/service/
     sudo sv start wpa_supplicant
+    sudo ln -s /etc/sv/dhcpcd /var/service/
+    sudo sv start dhcpcd
     ```
 
 5. Cấu hình wpa_supplicant để chạy file cấu hình vừa tạo
