@@ -413,3 +413,13 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     export GLFW_IM_MODULE=ibus
     EOF
     ```
+
+## Các nguồn tham khảo
+
+[1] https://docs.voidlinux.org/installation/live-images/guide.html
+
+[2] https://lotusinputmethod.github.io
+
+[3] https://gist.github.com/nerdyslacker/398671398915888f977b8bddb33ab1f1
+
+[4] https://github.com/NetBeholder/VoidLinux-installation-guide
