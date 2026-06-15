@@ -317,7 +317,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 - Cài đặt các gói:
 
     ```bash
-    sudo xbps-install acl acl-progs cmake extra-cmake-modules libfcitx5-devel libinput-devel eudev-libudev-devel gcc go gettext-devel pkg-config hicolor-icon-theme libX11-devel
+    sudo xbps-install acl acl-progs cmake extra-cmake-modules libfcitx5-devel libinput-devel eudev-libudev-devel gcc go gettext-devel pkg-config hicolor-icon-theme libX11-devel python3-QtPy python3-PyQt5 python3-pyqt6 python3-pyqt6-gui python3-pyqt6-widgets
     ```
 
 - Clone source và build:
