@@ -318,6 +318,8 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 ## Cài đặt Fcitx5-Lotus:
 
+CẢNH BÁO: Tiềm ẩn nguy cơ bảo mật do không khởi chạy bằng runit và cấp quyền riêng biệt theo hướng dẫn gốc!
+
 1. Cài đặt fcitx5:
 
     ```bash
