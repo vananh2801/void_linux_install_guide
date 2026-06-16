@@ -425,6 +425,73 @@ CẢNH BÁO: Tiềm ẩn nguy cơ bảo mật do không khởi chạy bằng run
     EOF
     ```
 
+## Tổng hợp một số hướng dẫn sửa lỗi trên Gnome
+
+### 1. Lỗi không lưu độ sáng màn hình sau khi khởi động lại.
+
+- Do Void Linux sửa dụng runit nên không có systemd-backlight để lưu độ sáng. Mỗi khi khởi động lại thì độ sáng màn hình sẽ reset về một mức nào đó. Ta sẽ tạo một service để runit chạy nó thay thế cho systemd-backlight.
+
+- Tạo thư mục chứa service
+
+    ```bash
+    sudo mkdir -p /etc/sv/backlight
+    ```
+
+- Tạo file run (Khôi phục độ sáng khi mở máy)
+
+    ```bash
+    sudo nano /etc/sv/backlight/run
+    ```
+
+    Với nội dung:
+
+    ```sh
+    #!/bin/sh
+    # Source: https://github.com/madand/runit-services
+
+    [ -d '/var/cache/backlight/' ] || mkdir -p '/var/cache/backlight'
+
+    for card in $(find /sys/class/backlight/ -type l); do
+        device_name=$(basename "$card")
+        storage_file="/var/cache/backlight/${device_name}-brightness-old"
+
+        if [ -r "$storage_file" ]; then
+            cat "$storage_file" > "$card/brightness" 2>/dev/null
+        fi
+    done
+
+    exec pause
+    ``` 
+
+- Tạo file finish (Lưu độ sáng khi tắt máy)
+
+    ```bash
+    sudo nano /etc/sv/backlight/finish
+    ```
+
+    Với nội dung:
+
+    ```bash
+    #!/bin/sh
+    # Source: https://github.com/madand/runit-services
+
+    [ -d '/var/cache/backlight/' ] || mkdir -p '/var/cache/backlight'
+
+    for card in $(find /sys/class/backlight/ -type l); do
+        device_name=$(basename "$card")
+        cat "$card/brightness" > "/var/cache/backlight/${device_name}-brightness-old"
+    done
+
+    ```
+
+- Cấp quyền và khởi chạy:
+
+    ```
+    sudo chmod +x /etc/sv/backlight/run
+    sudo chmod +x /etc/sv/backlight/finish
+    sudo sv start backlight
+    ```
+
 ## Các nguồn tham khảo
 
 [1] https://docs.voidlinux.org/installation/live-images/guide.html
@@ -434,3 +501,5 @@ CẢNH BÁO: Tiềm ẩn nguy cơ bảo mật do không khởi chạy bằng run
 [3] https://gist.github.com/nerdyslacker/398671398915888f977b8bddb33ab1f1
 
 [4] https://github.com/NetBeholder/VoidLinux-installation-guide
+
+[5] https://github.com/madand/runit-services
