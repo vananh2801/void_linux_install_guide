@@ -316,8 +316,6 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 ## Cài đặt Fcitx5-Lotus:
 
-CẢNH BÁO: Tiềm ẩn nguy cơ bảo mật do không khởi chạy bằng runit và cấp quyền riêng biệt theo hướng dẫn gốc!
-
 1. Cài đặt fcitx5:
 
     ```bash
@@ -333,15 +331,10 @@ CẢNH BÁO: Tiềm ẩn nguy cơ bảo mật do không khởi chạy bằng run
 
 3. Cài đặt fcitx5-lotus
 
-- Cài đặt các gói:
 
     ```bash
     sudo xbps-install acl acl-progs cmake extra-cmake-modules libfcitx5-devel libinput-devel eudev-libudev-devel gcc go gettext-devel pkg-config hicolor-icon-theme libX11-devel python3-QtPy python3-PyQt5 python3-pyqt6 python3-pyqt6-gui python3-pyqt6-widgets
-    ```
 
-- Clone source và build:
-
-    ```bash
     git clone --recursive https://github.com/LotusInputMethod/fcitx5-lotus.git
     cd fcitx5-lotus
     mkdir build && cd build
@@ -350,51 +343,98 @@ CẢNH BÁO: Tiềm ẩn nguy cơ bảo mật do không khởi chạy bằng run
     sudo make install
     ```
 
-- Tạo User và Group (thay thế systemd-sysusers):
+4. Tạo User và Group (thay thế systemd-sysusers):
 
     ```bash
     sudo groupadd -f input
     sudo useradd -M -g input -s /usr/bin/nologin -d / uinput_proxy
     ```
 
-- Reload Udev Rules:
+5. Reload Udev Rules:
 
     ```bash
     sudo udevadm control --reload-rules
     sudo udevadm trigger
     ```
 
-- Bật tự khởi chạy cho fcitx-lotus-server
+6. Chỉnh sửa file runit cho Void Linux (file gốc lỗi):
 
-    ```bash
-    nano ~/.config/autostart/fcitx5-lotus-server.desktop
+    ```bash 
+    sudo nano /etc/sv/fcitx5-lotus/run
     ```
-    Thêm vào nội dung:
+
+    Thay tất cả nội dung như sau:
     
-    ```bash
-    [Desktop Entry]
-    Name=Fcitx5 Lotus Server
-    GenericName=Input Method Server
-    Comment=Backend server for fcitx5-lotus
-    Exec=/usr/bin/fcitx5-lotus-server
-    Terminal=false
-    Type=Application
-    Categories=System;Utility;
-    StartupNotify=false
-    X-GNOME-Autostart-enabled=true
+    ```sh
+    #!/bin/sh -e
+    # Copyright (c) 2026 Contributors to the LotusInputMethod project
+    # SPDX-License-Identifier: GPL-3.0-or-later
+
+    setfacl -m u:uinput_proxy:rw /dev/uinput
+    exec 2>&1
+
+    exclude="run fcitx5-lotus supervise log conf"
+
+    has_targets=0
+
+    for user in *; do
+        [ -e "$user" ] || continue
+
+        is_excluded=0
+        for ex in $exclude; do
+            if [ "$user" = "$ex" ]; then
+                is_excluded=1
+                break
+            fi
+        done
+
+        [ "$is_excluded" -eq 1 ] && continue
+
+        if [ -f "$user" ]; then
+            (
+                has_targets=1
+                exec setpriv \
+                    --reuid=uinput_proxy \
+                    --regid=input \
+                    --init-groups \
+                    --bounding-set -all,+sys_nice,+sys_ptrace \
+                    --inh-caps +sys_nice,+sys_ptrace \
+                    --securebits +no_setuid_fixup,+no_setuid_fixup_locked \
+                    --ambient-caps +sys_nice,+sys_ptrace \
+                    /usr/bin/fcitx5-lotus-server -u "$user"
+            ) &
+        fi
+    done
+
+    if [ "$has_targets" -eq 0 ]; then
+        echo "No valid users found to start service."
+        sleep 30
+        exit 0
+    fi
+
+    wait
     ```
 
-    Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
+7. Bật tự khởi chạy cho fcitx-lotus-server
 
-- Nạp Kernel Module uinput:
+    ```bash
+    sudo chmod +x /etc/sv/fcitx5-lotus/run
+    sudo ln -s /etc/sv/fcitx5-lotus /var/service
+    sudo touch /var/service/fcitx5-lotus/$(whoami)
+    sudo sv start fcitx5-lotus
+    ```
+
+8. Nạp Kernel Module uinput:
 
     ```bash
     sudo modprobe uinput
     ```
 
+9. Thêm biến môi trường:
+
 - Đối với bash shell (mặc định), chạy:
 
-    ```bash
+    ```
     cat <<EOF >> ~/.bash_profile
     export XMODIFIERS=@im=fcitx
     export QT_IM_MODULE=fcitx
