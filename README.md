@@ -370,49 +370,26 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     # Copyright (c) 2026 Contributors to the LotusInputMethod project
     # SPDX-License-Identifier: GPL-3.0-or-later
 
-    setfacl -m u:uinput_proxy:rw /dev/uinput
     exec 2>&1
-
-    exclude="run fcitx5-lotus supervise log conf"
-
-    has_targets=0
-
-    for user in *; do
-        [ -e "$user" ] || continue
-
-        is_excluded=0
-        for ex in $exclude; do
-            if [ "$user" = "$ex" ]; then
-                is_excluded=1
-                break
+    setfacl -m u:uinput_proxy:rw /dev/uinput
+    exclude="run supervise log conf"
+    while true; do
+        for user in *; do
+            case " $exclude " in *" $user "*) continue ;; esac
+            [ ! -f "$user" ] && continue
+            if ! pgrep -f "/usr/bin/fcitx5-lotus-server -u $user" > /dev/null; then
+                echo "Starting server for: $user"
+                (
+                    exec setpriv --reuid=uinput_proxy --regid=input --init-groups \
+                        --bounding-set -all,+sys_nice,+sys_ptrace \
+                        --inh-caps +sys_nice,+sys_ptrace \
+                        --ambient-caps +sys_nice,+sys_ptrace \
+                        /usr/bin/fcitx5-lotus-server -u "$user"
+                ) &
             fi
         done
-
-        [ "$is_excluded" -eq 1 ] && continue
-
-        if [ -f "$user" ]; then
-            (
-                has_targets=1
-                exec setpriv \
-                    --reuid=uinput_proxy \
-                    --regid=input \
-                    --init-groups \
-                    --bounding-set -all,+sys_nice,+sys_ptrace \
-                    --inh-caps +sys_nice,+sys_ptrace \
-                    --securebits +no_setuid_fixup,+no_setuid_fixup_locked \
-                    --ambient-caps +sys_nice,+sys_ptrace \
-                    /usr/bin/fcitx5-lotus-server -u "$user"
-            ) &
-        fi
-    done
-
-    if [ "$has_targets" -eq 0 ]; then
-        echo "No valid users found to start service."
         sleep 30
-        exit 0
-    fi
-
-    wait
+    done
     ```
 
 7. Bật tự khởi chạy cho fcitx-lotus-server
