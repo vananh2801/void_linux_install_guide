@@ -529,6 +529,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     ```
     sudo chmod +x /etc/sv/backlight/run
     sudo chmod +x /etc/sv/backlight/finish
+    sudo ln -s /etc/sv/backlight /var/service
     sudo sv start backlight
     ```
 
