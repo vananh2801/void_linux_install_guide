@@ -388,7 +388,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
                 ) &
             fi
         done
-        sleep 30
+        sleep 10
     done
     ```
 
