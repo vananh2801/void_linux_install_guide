@@ -505,7 +505,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
     - ZRAM_STREAMS: số luồng của CPU dùng để nén (không set thì mặc định là 1). Ví dụ máy tôi là AMD R7 7730U 8 nhân 16 luồng khá mạnh nên tôi set giá trị 10.
 
-    ZRAMEN_SWAPON_DISCARD: để mặc định là ổn rồi.
+    - ZRAMEN_SWAPON_DISCARD: để mặc định là ổn rồi.
 
     - ZRAMEN_QUIET: giá trị 0 là bật log đầy đủ, giá trị 1 là chỉ log khi có lỗi nghiệm trọng. Chỗ này tôi thấy để giá trị 0 ổn hơn, dễ theo dõi mà cũng không ảnh hưởng hiệu năng mấy.
 
