@@ -449,33 +449,33 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
     zRAM có thể giải quyết vấn đề đó. Khi dung lượng RAM đạt đến ngưỡng nhất định thì hệ thống sẽ nén dữ liệu trên RAM lại. Tất nhiên dữ liệu trước và sau khi nén đều nằm trên RAM, không đọc ghi vào ổ cứng.
 
-    Ví dụ. máy tôi có 8 GB, tôi cần mở các phần mềm để làm việc. Nếu mở hết thì tôi cần dùng tới 9 GB. Điều này là quá sức. Khi bắt đầu đạt ngưỡng 7,5 GB, hệ thống sẽ nén. Đến khi mở hết chương trình thì 9GB này đã nén thành 7,5 GB. Tất nhiên 7,5 GB dữ liệu này vẫn nằm trên RAM, ta đã tiết kiệm 1,5 GB. Như vậy 1,5 GB này dung lượng của zRAM (swap).
-
-    Ưu điểm: 
+    Ví dụ. máy tôi có 8 GB, tôi chia sẻ RAM cho iGPU 0,5 GB, còn lại 7,5 GB. Tôi cần mở các phần mềm để làm việc. Nếu mở hết thì tôi cần dùng tới 9 GB. Điều này là sẽ dẫn tới treo máy. Thông thường, khi máy đã ngưỡng 7 GB sẽ bắt đầu quá tải, cần swap khoảng 2 GB vào SSD. Nhưng khi dùng zRAM, thuật toán zstd với tỉ lệ nén giả sử là 3:1. Khi bắt đầu đạt ngưỡng 7 GB, hệ thống sẽ bắt đầu nén. Đến khi mở hết chương trình thì 9 GB này đã được nén như sau: 6 GB không nén và 1 GB nén (chứa dữ liệu của 3 GB không nén). Như vậy trên thanh RAM mới chỉ dùng 7Gb. Ta đã tiết kiệm 2 GB mà không phải ghi vào ổ cứng.
+   
+    Ưu điểm so với swap: 
 
     - Hạn chế việc phải đọc ghi trên ổ cứng.
     - Mặc dù cần tốn thời gian để nén giải nhưng tốc độ vẫn hơn rất nhiều so với việc đọc ghi trên ổ cứng.
 
-    Nhược điểm:
+    Nhược điểm so với swap:
 
-    - Tốn một chút % CPU.
+    - Tốn một chút % CPU để nén và giải nén.
 
     Nên dùng khi bạn có lượng RAM tương đối thấp (thường thì 8GB trở xuống). Nhiều distro cũng bật chức năng này mặc định.
 
-2. Cài gói:
+3. Cài gói:
 
     ```bash
     sudo xbps-install zramen
     ```
 
-3. Khởi chạy:
+4. Khởi chạy:
 
     ```bash
     sudo ln -s /etc/sv/zramen /var/service/
     sudo sv start zramen
     ```
 
-4. Cấu hình:
+5. Cấu hình:
 
     ```bash
     sudo nano /etc/sv/zramen/conf
@@ -529,7 +529,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     sudo sv restart zramen
     ```
 
-5. Đặt thêm một số thông số để nén tiến trình ngầm tốt hơn:
+6. Đặt thêm một số thông số để nén tiến trình ngầm tốt hơn:
 
 - Tạo file:
 
