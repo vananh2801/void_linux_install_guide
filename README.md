@@ -442,6 +442,117 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     EOF
     ```
 
+## Bật zRAM để có trải nghiệm tốt hơn ( ĐỌC KĨ )
+
+1. zRam là gì?  
+    Đối với các máy có lượng RAM thấp, nếu RAM chạm mức tối đa sẽ bị treo máy. Theo cách truyền thống, ta có thể ghi tạm dữ liệu quá tải vào ổ cứng (HDD/SSD), gọi là vùng Swap vật lý. Lâu ngày việc này làm ổ cứng bị đọc ghi rất nhiều.
+
+    zRAM có thể giải quyết vấn đề đó. Khi dung lượng RAM đạt đến ngưỡng nhất định thì hệ thống sẽ nén dữ liệu trên RAM lại. Tất nhiên dữ liệu trước và sau khi nén đều nằm trên RAM, không đọc ghi vào ổ cứng.
+
+    Ví dụ. máy tôi có 8 GB, tôi cần mở các phần mềm để làm việc. Nếu mở hết thì tôi cần dùng tới 9 GB. Điều này là quá sức. Khi bắt đầu đạt ngưỡng 7,5 GB, hệ thống sẽ nén. Đến khi mở hết chương trình thì 9GB này đã nén thành 7,5 GB. Tất nhiên 7,5 GB dữ liệu này vẫn nằm trên RAM, ta đã tiết kiệm 1,5 GB. Như vậy 1,5 GB này dung lượng của zRAM (swap).
+
+    Ưu điểm: 
+
+    - Hạn chế việc phải đọc ghi trên ổ cứng.
+    - Mặc dù cần tốn thời gian để nén giải nhưng tốc độ vẫn hơn rất nhiều so với việc đọc ghi trên ổ cứng.
+
+    Nhược điểm:
+
+    - Tốn một chút % CPU.
+
+    Nên dùng khi bạn có lượng RAM tương đối thấp (thường thì 8GB trở xuống). Nhiều distro cũng bật chức năng này mặc định.
+
+2. Cài gói:
+
+    ```bash
+    sudo xbps-install zramen
+    ```
+
+3. Khởi chạy:
+
+    ```bash
+    sudo ln -s /etc/sv/zramen /var/service/
+    sudo sv start zramen
+    ```
+
+4. Cấu hình:
+
+    ```bash
+    sudo nano /etc/sv/zramen/conf
+    ```
+
+    Nội dung mặc đinh như sau, bỏ dấu # đầu dòng để bật thuộc tính:
+
+    ```bash
+    #export ZRAM_COMP_ALGORITHM=ls4
+    #export ZRAM_PRIORITY=32767
+    #export ZRAM_SIZE=25
+    #export ZRAM_MAX_SIZE=4096
+    #export ZRAM_STREAMS=1
+    #export ZRAMEN_SWAPON_DISCARD=both
+    #export ZRAMEN_QUIET=0
+    ```
+
+    Trong đó:
+    
+    - ZRAM_COMP_ALGORITHM: dùng lz4 cho hiệu suất cao nhưng độ nén vừa phải, dùng zstd cho độ nén cao nhưng hiệu suất thấp hơn. Nhu cầu tôi không nhiều nên dùng mặc định lz4. Theo tôi biết thì Fedora mặc định dùng zstd.
+
+    - ZRAM_PRIORITY: độ ưu tiên, dòng này để mặc định là giá trị lớn nhất, không có gì để chỉnh sửa.
+
+    - ZRAM_SIZE: dung lượng zRAM sẽ bằng bao nhiêu % so với RAM thực tế.
+
+    - ZRAM_MAX_SIZE: dung lượng zRAM tối đa, tính bằng MiB. Chỗ này tôi thấy để ZRAM_SIZE=100 và ZRAM_MAX_SIZE=8192 là ổn. Máy 4 GB RAM thì cũng chạy tối đa 4 GB, các máy từ 8 GB RAM trở lên thì chạy 8 GB tối đa.
+
+    - ZRAM_STREAMS: số luồng của CPU dùng để nén (không set thì mặc định là 1). Ví dụ máy tôi là AMD R7 7730U 8 nhân 16 luồng khá mạnh nên tôi set giá trị 10.
+
+    ZRAMEN_SWAPON_DISCARD: để mặc định là ổn rồi.
+
+    - ZRAMEN_QUIET: giá trị 0 là bật log đầy đủ, giá trị 1 là chỉ log khi có lỗi nghiệm trọng. Chỗ này tôi thấy để giá trị 0 ổn hơn, dễ theo dõi mà cũng không ảnh hưởng hiệu năng mấy.
+
+    Cấu hình tôi dùng như sau:
+
+    ```bash
+    export ZRAM_COMP_ALGORITHM=ls4
+    export ZRAM_PRIORITY=32767
+    export ZRAM_SIZE=100
+    export ZRAM_MAX_SIZE=8192
+    export ZRAM_STREAMS=10
+    export ZRAMEN_SWAPON_DISCARD=both
+    export ZRAMEN_QUIET=0
+    ```
+
+    Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
+
+    Khởi động lại zramen:
+
+    ```bash
+    sudo sv restart zramen
+    ```
+
+5. Đặt thêm một số thông số để nén tiến trình ngầm tốt hơn:
+
+- Tạo file:
+
+    ```bash
+    sudo mkdir -p /etc/sysctl.d/
+    sudo nano /etc/sysctl.d/99-zram.conf
+    ```
+
+- Thêm nội dung:
+
+    ```bash
+    vm.swappiness=100
+    vm.page-cluster=0
+    ```
+
+    Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
+
+- Chạy lệnh: 
+
+    ```bash
+    sudo sysctl --system
+    ```
+
 ## Tổng hợp một số hướng dẫn sửa lỗi trên Gnome
 
 ### 1. Lỗi không lưu độ sáng màn hình sau khi khởi động lại.
