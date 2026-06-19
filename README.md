@@ -116,10 +116,10 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 1. Cài đặt:
 
     ```bash
-    sudo xbps-install NetworkManager iwd
+    sudo xbps-install NetworkManager
     ```
 
-    Ở đây, tôi dùng iwd làm backend cho NetworkManager.
+    Ở đây, tôi dùng wpa_supplicant đã có sẵn làm backend cho wifi trên NetworkManager. Các distro như Ubuntu và Fedora cũng dùng wpa_supplicant theo mặc định.
 
 2. Cấu hình NetworkManager:
 
@@ -131,10 +131,13 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
     ```bash                 
     [main]
-    plugins=keyfile,iwd
+    plugins=keyfile
 
     [device]
-    wifi.backend=iwd
+    wifi.backend=wpa_supplicant
+
+    [connection]
+    wifi.powersave = 2
     ```
 
     Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
@@ -148,10 +151,12 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     sudo rm /var/service/dhcpcd
 
     sudo ln -sv /etc/sv/NetworkManager /var/service
-    sudo ln -sv /etc/sv/iwd /var/service
     sudo sv start NetworkManager
-    sudo sv start iwd
     ```
+
+    Do NetworkManager sẽ tự gọi wpa_supplicant và tự cấu hình IP nên ta không khởi chạy wpa_supplicant và dhcpcd qua runit nữa.
+
+4. Khởi động lại máy tính.
 
 ## Cài gói PipeWire để có âm thanh và quay màn hình trên Gnome
 
