@@ -132,14 +132,16 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     ```bash                                                      
     [main]
     plugins=keyfile
+    hostname-mode=none
 
     [device]
     wifi.backend=wpa_supplicant
-    wifi.scan-rand-mac-address=no
+    wifi.scan-rand-mac-address=yes
 
     [connection]
-    wifi.powersave = 2
-    wifi.cloned-mac-address=preserve
+    wifi.powersave=2
+    wifi.cloned-mac-address=stable
+    ethernet.cloned-mac-address=stable
     ```
 
     Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
