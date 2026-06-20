@@ -129,15 +129,17 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
     Chỉnh lại nội dung file như sau:
 
-    ```bash                 
+    ```bash                                                      
     [main]
     plugins=keyfile
 
     [device]
     wifi.backend=wpa_supplicant
+    wifi.scan-rand-mac-address=no
 
     [connection]
     wifi.powersave = 2
+    wifi.cloned-mac-address=preserve
     ```
 
     Nhấn Ctrl + S để lưu và Ctrl + X để thoát.
