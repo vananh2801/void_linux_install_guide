@@ -267,15 +267,6 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
     sudo useradd -G bluetooth ${USER}
     ```
 
-## Cài đặt snooze (tuỳ chọn)
-
-Đây là trình quản lý dùng để chạy các hoạt động dựa trên lịch trình tự tạo. Chi tiết thì xem trên mạng :v
-
--
-    ```bash
-    sudo xbps-install snooze
-    ```
-
 ## Cài một số phông chữ
 
 1. Cài Noto fonts:
