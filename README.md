@@ -235,8 +235,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 5. Bật tự khởi chạy cho PipeWire:
 
    ```bash
-   mkdir -p ~/.config/autostart
-   ln -sf /usr/share/applications/pipewire.desktop ~/.config/autostart/
+   ln -s /usr/share/applications/pipewire.desktop /etc/xdg/autostart/pipewire.desktop
    ```
 
 6. Cấp quyền cho người dùng:
@@ -368,8 +367,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 2. Bật tự khởi chạy cho fcitx5
 
    ```bash
-   mkdir -p ~/.config/autostart
-   ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
+   ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop ~/etc/xdg/autostart/
    ```
 
 3. Cài đặt fcitx5-lotus
