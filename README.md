@@ -1,8 +1,8 @@
-# Hướng dẫn cài đặt Gnome trên Void Linux (06/2026)
+# Hướng dẫn cài đặt Gnome trên Void Linux (09/2026)
 
 Hướng dẫn này dùng để cài Gnome và một số gói khác sau khi cài Void Linux bằng base ISO.
 
-Khi cài nên nên chọn srouce cài từ Internet để có các gói mới nhất dùng cho ổn định, đỡ mất thời gian update lại sau.
+Khi cài nên chọn source cài từ Internet để có các gói mới nhất dùng cho ổn định, đỡ mất thời gian update lại sau.
 
 Trong quá trình cài mà xuất hiện lỗi thì thử chạy đơn lẻ từng dòng lệnh.
 
@@ -97,13 +97,13 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
   > quit
   ```
 
-6. Cấu hình lớp IP:
+5. Cấu hình lớp IP:
 
    ```bash
    sudo dhcpcd wlp2s0
    ```
 
-7. Kiểm tra mạng:
+6. Kiểm tra mạng:
 
    ```bash
    ping google.com
@@ -146,9 +146,9 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 3. Bật các dịch vụ cho gnome:
 
    ```bash
-   sudo ln -s \etc\sv\gdm \var\servie
-   sudo ln -s \etc\sv\dbus \var\servie
-   sudo ln -s \etc\sv\power-profiles-daemon \var\servie
+   sudo ln -s /etc/sv/gdm /var/service/
+   sudo ln -s /etc/sv/dbus /var/service/
+   sudo ln -s /etc/sv/power-profiles-daemon /var/service/
    ```
 
 ## Cài đặt NetworkManager dùng cho Gnome
@@ -255,13 +255,13 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 2. Bật dịch vụ:
 
    ```bash
-   sudo ln -s \etc\sv\bluetoothd \var\servie
+   sudo ln -s /etc/sv/bluetoothd /var/service/
    ```
 
 3. Cấp quyền:
 
    ```bash
-   sudo useradd -G bluetooth ${USER}
+   sudo usermod -aG bluetooth ${USER}
    ```
 
 ## Cài một số phông chữ
@@ -288,7 +288,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
    git clone https://github.com/void-linux/void-packages
    cd void-packages
    ./xbps-src binary-bootstrap
-   echo "XBPS_ALLOW_RESTRICTED=yes" >> etc/conf
+   echo "XBPS_ALLOW_RESTRICTED=yes" >> /etc/conf
    ```
 
    Sau đó, ta dùng xbps-src để cài phông:
@@ -300,7 +300,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 ## Cài đặt một số phần mềm khác
 
-1. Cài đặt LibreOffce (tuỳ chọn):
+1. Cài đặt LibreOffice (tuỳ chọn):
 
    ```bash
    sudo xbps-install libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base libreoffice-gnome libreoffice-i18n-en-US
@@ -350,7 +350,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
   Input Method Panel
   ```
 
-6. Cài Gnome Tweaks
+5. Cài Gnome Tweaks
 
    ```bash
    sudo xbps-install gnome-tweaks
@@ -367,7 +367,8 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 2. Bật tự khởi chạy cho fcitx5
 
    ```bash
-   ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop ~/etc/xdg/autostart/
+   mkdir -p ~/.config/autostart
+   ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
    ```
 
 3. Cài đặt fcitx5-lotus
@@ -426,7 +427,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
   export XMODIFIERS=@im=fcitx
   export QT_IM_MODULE=fcitx
   export QT_IM_MODULES="wayland;fcitx"
-  export GLFW_IM_MODULE=ibus
+  export GLFW_IM_MODULE=fcitx
   EOF
   ```
 
@@ -437,8 +438,8 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
       set -Ux XMODIFIERS @im=fcitx
       set -Ux QT_IM_MODULE fcitx
       set -Ux QT_IM_MODULES "wayland;fcitx"
-      set -Ux GLFW_IM_MODULE ibus
-   ~/.config/fish/config.fish
+      set -Ux GLFW_IM_MODULE fcitx
+  end' >> ~/.config/fish/config.fish
   ```
 
 - Đối với zsh shell, chạy:
@@ -448,7 +449,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
   export XMODIFIERS=@im=fcitx
   export QT_IM_MODULE=fcitx
   export QT_IM_MODULES="wayland;fcitx"
-  export GLFW_IM_MODULE=ibus
+  export GLFW_IM_MODULE=fcitx
   EOF
   ```
 
@@ -505,7 +506,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
    Nội dung mặc đinh như sau, bỏ dấu # đầu dòng để bật thuộc tính:
 
    ```bash
-   #export ZRAM_COMP_ALGORITHM=ls4
+   #export ZRAM_COMP_ALGORITHM=lz4
    #export ZRAM_PRIORITY=32767
    #export ZRAM_SIZE=25
    #export ZRAM_MAX_SIZE=4096
@@ -533,7 +534,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
    Cấu hình tôi dùng như sau:
 
    ```bash
-   export ZRAM_COMP_ALGORITHM=ls4
+   export ZRAM_COMP_ALGORITHM=lz4
    export ZRAM_PRIORITY=32767
    export ZRAM_SIZE=100
    export ZRAM_MAX_SIZE=8192
@@ -654,6 +655,6 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 [5] https://github.com/madand/runit-services
 
-[5] https://wiki.archlinux.org/title/Wpa_supplicant
+[6] https://wiki.archlinux.org/title/Wpa_supplicant
 
-[6] https://wiki.archlinux.org/title/NetworkManager
+[7] https://wiki.archlinux.org/title/NetworkManager
