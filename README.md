@@ -300,10 +300,10 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 ## Cài đặt một số phần mềm khác
 
-1. Cài đặt LibreOffice (tuỳ chọn):
+1. Cài đặt LibreOffice:
 
    ```bash
-   sudo xbps-install libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base libreoffice-gnome libreoffice-i18n-en-US
+   sudo xbps-install libreoffice
    ```
 
 2. Cài đặt Firefox:
@@ -368,7 +368,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
    ```bash
    mkdir -p ~/.config/autostart
-   ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
+   ln -s /usr/share/applications/org.fcitx.Fcitx5.desktop /etc/xdg/autostart/
    ```
 
 3. Cài đặt fcitx5-lotus
