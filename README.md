@@ -643,6 +643,14 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
   sudo sv start backlight
   ```
 
+## Hướng dẫn cập nhật BIOS bằng .exe
+
+1. Cài Ventoy trên USB, copy BiosUpdate.exe và HirenBootCD.iso vào USB.
+2. Khởi động vào Ventoy, chọn Hiren Boot.
+3. Vào ổ đĩa Ventoy chạy BiosUpdate.exe, tiến hành cài và cập nhật giống trên Windows.
+
+Ở một số bước máy chạy hơi lâu, không nên bấm nút khởi động lại giữa chừng.
+
 ## Các nguồn tham khảo
 
 [1] https://docs.voidlinux.org/installation/live-images/guide.html
