@@ -579,7 +579,28 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 
 ### 1. Lỗi không lưu độ sáng màn hình sau khi khởi động lại.
 
-- Do Void Linux sửa dụng runit nên không có systemd-backlight để lưu độ sáng. Mỗi khi khởi động lại thì độ sáng màn hình sẽ reset về một mức nào đó. Ta sẽ tạo một service để runit chạy nó thay thế cho systemd-backlight.
+- Ta thử chạy lệnh `dmesg`:
+
+  ```bash
+  sudo dmesg | grep backlight
+  ```
+
+  Ta có thể gặp các dòng báo lỗi tương tự như sau:
+
+  ```bash
+  systemd-udevd[432]: failed to execute '/bin/chgrp' '/bin/chgrp video /sys/class/backlight/amdgpu_bl0/brightness': No such file or directory
+  systemd-udevd[433]: failed to execute '/bin/chmod' '/bin/chmod g+w /sys/class/backlight/amdgpu_bl0/brightness': No such file or directory
+  ```
+
+  Trên Void Linux, môi trường khởi động sớm (initramfs) do dracut tạo ra có chứa một file udev rule quản lý độ sáng màn hình. Tuy nhiên, mặc định dracut lại không copy hai công cụ là chgrp và chmod vào môi trường này. Khi máy đang boot, nó gọi lệnh này không được nên báo lỗi "No such file".
+
+- Ta chạy các lệnh sau để bổ sung hai công cụ cho môi trường khổi động:
+  ```bash
+  echo 'install_items+=" /usr/bin/chgrp /usr/bin/chmod "' | sudo tee /etc/dracut.conf.d/10-backlight-tools.conf
+  sudo dracut --force
+  ```
+
+Nếu vẫn không được thì ta dùng phương pháp sau:
 
 - Tạo thư mục chứa service
 
