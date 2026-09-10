@@ -117,7 +117,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
   sudo xbps-install -Suv
   ```
 
-## Cài một số phần mềm khác
+## Cài một số gói khác
 
 - ```bash
   sudo xbps-install nano git zip unzip curl wget xz vim
@@ -126,7 +126,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 ## Thêm non-free-repo và cài linux-firmware
 
 - ```bash
-  sudo xbps-install void-repo-nonfree linux-firmware
+  sudo xbps-install void-repo-nonfree void-repo-multilib linux-firmware
   ```
 
 ## Cài đặt Gnome
@@ -288,7 +288,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
    git clone https://github.com/void-linux/void-packages
    cd void-packages
    ./xbps-src binary-bootstrap
-   echo "XBPS_ALLOW_RESTRICTED=yes" >> /etc/conf
+   echo "XBPS_ALLOW_RESTRICTED=yes" >> ./etc/conf
    ```
 
    Sau đó, ta dùng xbps-src để cài phông:
