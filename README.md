@@ -361,7 +361,7 @@ Chi tiết ở [trang hướng dẫn chính thức](https://docs.voidlinux.org/i
 1. Cài đặt fcitx5:
 
    ```bash
-   sudo xbps-install fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt
+   sudo xbps-install fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt fcitx5-gtk+2 fcitx5-gtk3 fcitx5-gtk4
    ```
 
 2. Bật tự khởi chạy cho fcitx5
